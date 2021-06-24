@@ -29,17 +29,17 @@ struct sg_instr_t {
 #define SG_BXO (uint32_t)(0b000000000010000000000000)
 #define SG_DXO (uint32_t)(0b000000000011000000000000)
 #define SG_DHO (uint32_t)(0b000000000100000000000000)
-#define SG_DLO (uint32_t)(0b000000000101000000000000)
-#define SG_TXO (uint32_t)(0b000000000110000000000000)
-#define SG_THO (uint32_t)(0b000000000111000000000000)
-#define SG_TLO (uint32_t)(0b000000001000000000000000)
-#define SG_RXO (uint32_t)(0b000000001001000000000000)
-#define SG_RHO (uint32_t)(0b000000001010000000000000)
-#define SG_RLO (uint32_t)(0b000000001011000000000000)
-#define SG_XIO (uint32_t)(0b000000001100000000000000)
-#define SG_YIO (uint32_t)(0b000000001101000000000000)
-#define SG_SPO (uint32_t)(0b000000001110000000000000)
-#define SG_IPO (uint32_t)(0b000000001111000000000000)
+#define SG_TXO (uint32_t)(0b000000000101000000000000)
+#define SG_RXO (uint32_t)(0b000000000110000000000000)
+#define SG_RHO (uint32_t)(0b000000000111000000000000)
+#define SG_XIO (uint32_t)(0b000000001000000000000000)
+#define SG_YIO (uint32_t)(0b000000001001000000000000)
+#define SG_SPO (uint32_t)(0b000000001010000000000000)
+#define SG_IPO (uint32_t)(0b000000001011000000000000)
+#define SG_SW1 (uint32_t)(0b000000001100000000000000)
+#define SG_SW2 (uint32_t)(0b000000001101000000000000)
+#define SG_SW3 (uint32_t)(0b000000001110000000000000)
+#define SG_SW4 (uint32_t)(0b000000001111000000000000)
 
 // Affect on rising edge
 #define SG_AXI (uint32_t)(0b000000000000000100000000)
@@ -87,7 +87,7 @@ struct sg_instr_t {
 #define SG_MSK_INC (uint32_t)(0b000000000000000000000111)
 
 // Instruction count
-#define SG_CNT 0xC6
+#define SG_CNT 0xC0
 
 static const uint32_t sg_ucode_arr[] = {
   // 0x00: LDA $X
@@ -144,7 +144,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_DHI | SG_REA,
-  SG_IPI | SG_TXO,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
@@ -154,7 +154,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_DLI | SG_REA,
-  SG_IPI | SG_TXO,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
@@ -174,7 +174,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_RXI | SG_AXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -184,7 +184,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_RXI | SG_BXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -194,7 +194,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_RXI | SG_DXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -204,7 +204,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_RXI | SG_XIO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -214,7 +214,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
   SG_RXI | SG_YIO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -233,7 +233,7 @@ static const uint32_t sg_ucode_arr[] = {
   // 0x0E: STL $X
   SG_TXI | SG_IPO,
   SG_IPI | SG_XIO,
-  SG_WRI | SG_DLO,
+  SG_WRI | SG_DXO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -304,7 +304,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_DHI | SG_REA,
-  SG_IPI | SG_TXO,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
@@ -314,7 +314,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_DLI | SG_REA,
-  SG_IPI | SG_TXO,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
@@ -334,7 +334,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_RXI | SG_AXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -344,7 +344,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_RXI | SG_BXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -354,7 +354,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_RXI | SG_DXO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -364,7 +364,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_RXI | SG_XIO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -374,7 +374,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
   SG_RXI | SG_YIO,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
@@ -393,7 +393,7 @@ static const uint32_t sg_ucode_arr[] = {
   // 0x1E: STL $Y
   SG_TXI | SG_IPO,
   SG_IPI | SG_YIO,
-  SG_WRI | SG_DLO,
+  SG_WRI | SG_DXO,
   SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -410,167 +410,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x20: LDA $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_AXI | SG_RXO | SG_IIP,
-
-  // 0x21: LDB $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_BXI | SG_RXO | SG_IIP,
-
-  // 0x22: LDD $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_DXI | SG_RXO | SG_IIP,
-
-  // 0x23: LDX $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_XII | SG_RXO | SG_IIP,
-
-  // 0x24: LDY $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_YII | SG_RXO | SG_IIP,
-
-  // 0x25: LDH $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_DHI | SG_REA,
-  SG_IPI | SG_TXO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0x26: LDL $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_DLI | SG_REA,
-  SG_IPI | SG_TXO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0x27: LDS $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_TXO,
-  SG_SPI | SG_RXO | SG_IIP,
-
-  // 0x28: STA $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RXI | SG_AXO,
-  SG_WRI | SG_RLO | SG_IIP,
-  SG_WRI | SG_RHO,
-  SG_IPI | SG_TXO | SG_IIP,
-
-  // 0x29: STB $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RXI | SG_BXO,
-  SG_WRI | SG_RLO | SG_IIP,
-  SG_WRI | SG_RHO,
-  SG_IPI | SG_TXO | SG_IIP,
-
-  // 0x2A: STD $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RXI | SG_DXO,
-  SG_WRI | SG_RLO | SG_IIP,
-  SG_WRI | SG_RHO,
-  SG_IPI | SG_TXO | SG_IIP,
-
-  // 0x2B: STX $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RXI | SG_XIO,
-  SG_WRI | SG_RLO | SG_IIP,
-  SG_WRI | SG_RHO,
-  SG_IPI | SG_TXO | SG_IIP,
-
-  // 0x2C: STY $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_RXI | SG_YIO,
-  SG_WRI | SG_RLO | SG_IIP,
-  SG_WRI | SG_RHO,
-  SG_IPI | SG_TXO | SG_IIP,
-
-  // 0x2D: STH $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_WRI | SG_DHO,
-  SG_IPI | SG_TXO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0x2E: STL $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_WRI | SG_DLO,
-  SG_IPI | SG_TXO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0x2F: STZ $ptr
-  SG_TXI | SG_IPO | SG_IIP,
-  SG_RLI | SG_REA | SG_IIP,
-  SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
-  SG_WRI,
-  SG_IPI | SG_TXO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0x30: LDA imm
+  // 0x20: LDA imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -580,7 +420,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x31: LDB imm
+  // 0x21: LDB imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -590,7 +430,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x32: LDD imm
+  // 0x22: LDD imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -600,7 +440,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x33: LDX imm
+  // 0x23: LDX imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -610,7 +450,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x34: LDY imm
+  // 0x24: LDY imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -620,27 +460,27 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x35: LDH imm
+  // 0x25: LDH imm
   SG_IIP,
   SG_DHI | SG_REA | SG_IIP,
-  SG_NOP,
+  SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
 
-  // 0x36: LDL imm
+  // 0x26: LDL imm
   SG_IIP,
   SG_DLI | SG_REA | SG_IIP,
-  SG_NOP,
+  SG_IIP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
 
-  // 0x37: LDS imm
+  // 0x27: LDS imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -650,7 +490,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x38: SRA
+  // 0x28: SRA
   SG_RXI | SG_SHR | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -660,7 +500,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x39: SRB
+  // 0x29: SRB
   SG_RXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_SHR,
@@ -670,7 +510,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3A: SLA
+  // 0x2A: SLA
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_AXO,
   SG_RXI | SG_ADD,
@@ -680,7 +520,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3B: SLB
+  // 0x2B: SLB
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RXI | SG_ADD,
@@ -690,7 +530,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3C: NGA
+  // 0x2C: NGA
   SG_RXI | SG_NEG | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -700,7 +540,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3D: NGB
+  // 0x2D: NGB
   SG_RXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_NEG,
@@ -710,7 +550,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3E: INX
+  // 0x2E: INX
   SG_INX,
   SG_IIP,
   SG_NOP,
@@ -720,7 +560,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x3F: INY
+  // 0x2F: INY
   SG_INY,
   SG_IIP,
   SG_NOP,
@@ -730,7 +570,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x40: ADA B
+  // 0x30: ADA B
   SG_RXI | SG_ADD | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -740,7 +580,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x41: ADB A
+  // 0x31: ADB A
   SG_RXI | SG_ADD | SG_IIP,
   SG_BXI | SG_RXO,
   SG_NOP,
@@ -750,7 +590,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x42: SBA B
+  // 0x32: SBA B
   SG_RXI | SG_SUB | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -760,7 +600,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x43: SBB A
+  // 0x33: SBB A
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_TXO,
@@ -770,7 +610,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x44: ANA B
+  // 0x34: ANA B
   SG_RXI | SG_AND | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -780,7 +620,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x45: ANB A
+  // 0x35: ANB A
   SG_RXI | SG_AND | SG_IIP,
   SG_BXI | SG_RXO,
   SG_NOP,
@@ -790,7 +630,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x46: ORA B
+  // 0x36: ORA B
   SG_RXI | SG_ORR | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -800,7 +640,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x47: ORB A
+  // 0x37: ORB A
   SG_RXI | SG_ORR | SG_IIP,
   SG_BXI | SG_RXO,
   SG_NOP,
@@ -810,7 +650,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x48: EXA B
+  // 0x38: EXA B
   SG_RXI | SG_XOR | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
@@ -820,7 +660,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x49: EXB A
+  // 0x39: EXB A
   SG_RXI | SG_XOR | SG_IIP,
   SG_BXI | SG_RXO,
   SG_NOP,
@@ -830,67 +670,67 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x4A: PSH A
+  // 0x3A: PSH A
   SG_RXI | SG_AXO | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x4B: PSH B
+  // 0x3B: PSH B
   SG_RXI | SG_BXO | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x4C: PSH D
+  // 0x3C: PSH D
   SG_RXI | SG_DXO | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x4D: PSH X
+  // 0x3D: PSH X
   SG_RXI | SG_XIO | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x4E: PSH Y
+  // 0x3E: PSH Y
   SG_RXI | SG_YIO | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x4F: PSH imm
+  // 0x3F: PSH imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
   SG_TXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
 
-  // 0x50: ADA D
+  // 0x40: ADA D
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_DXO,
   SG_RXI | SG_ADD,
@@ -900,7 +740,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x51: ADB D
+  // 0x41: ADB D
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_DXO,
@@ -910,7 +750,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x52: SBA D
+  // 0x42: SBA D
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_DXO,
   SG_RXI | SG_SUB,
@@ -920,7 +760,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x53: SBB D
+  // 0x43: SBB D
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_DXO,
@@ -930,7 +770,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x54: ANA D
+  // 0x44: ANA D
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_DXO,
   SG_RXI | SG_AND,
@@ -940,7 +780,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x55: ANB D
+  // 0x45: ANB D
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_DXO,
@@ -950,7 +790,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x56: ORA D
+  // 0x46: ORA D
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_DXO,
   SG_RXI | SG_ORR,
@@ -960,7 +800,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x57: ORB D
+  // 0x47: ORB D
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_DXO,
@@ -970,7 +810,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x58: EXA D
+  // 0x48: EXA D
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_DXO,
   SG_RXI | SG_XOR,
@@ -980,7 +820,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x59: EXB D
+  // 0x49: EXB D
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_DXO,
@@ -990,7 +830,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x5A: POP A
+  // 0x4A: POP A
   SG_DSP,
   SG_TXI | SG_IPO | SG_DSP,
   SG_IPI | SG_SPO,
@@ -1000,7 +840,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_AXI | SG_RXO,
   SG_NOP,
 
-  // 0x5B: POP B
+  // 0x4B: POP B
   SG_DSP,
   SG_TXI | SG_IPO | SG_DSP,
   SG_IPI | SG_SPO,
@@ -1010,7 +850,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_NOP,
 
-  // 0x5C: POP D
+  // 0x4C: POP D
   SG_DSP,
   SG_TXI | SG_IPO | SG_DSP,
   SG_IPI | SG_SPO,
@@ -1020,7 +860,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_DXI | SG_RXO,
   SG_NOP,
 
-  // 0x5D: POP X
+  // 0x4D: POP X
   SG_DSP,
   SG_TXI | SG_IPO | SG_DSP,
   SG_IPI | SG_SPO,
@@ -1030,7 +870,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_XII | SG_RXO,
   SG_NOP,
 
-  // 0x5E: POP Y
+  // 0x4E: POP Y
   SG_DSP,
   SG_TXI | SG_IPO | SG_DSP,
   SG_IPI | SG_SPO,
@@ -1040,17 +880,17 @@ static const uint32_t sg_ucode_arr[] = {
   SG_YII | SG_RXO,
   SG_NOP,
 
-  // 0x5F: RET
+  // 0x4F: RET
   SG_DSP,
-  SG_IPI | SG_SPO | SG_DSP,
+  SG_DSP,
+  SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_RXO,
-  SG_NOP,
+  SG_IPI | SG_RXO,
   SG_NOP,
   SG_NOP,
 
-  // 0x60: ADA X
+  // 0x50: ADA X
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_XIO,
   SG_RXI | SG_ADD,
@@ -1060,7 +900,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x61: ADB X
+  // 0x51: ADB X
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_XIO,
@@ -1070,7 +910,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x62: SBA X
+  // 0x52: SBA X
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_XIO,
   SG_RXI | SG_SUB,
@@ -1080,7 +920,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x63: SBB X
+  // 0x53: SBB X
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_XIO,
@@ -1090,7 +930,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x64: ANA X
+  // 0x54: ANA X
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_XIO,
   SG_RXI | SG_AND,
@@ -1100,7 +940,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x65: ANB X
+  // 0x55: ANB X
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_XIO,
@@ -1110,7 +950,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x66: ORA X
+  // 0x56: ORA X
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_XIO,
   SG_RXI | SG_ORR,
@@ -1120,7 +960,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x67: ORB X
+  // 0x57: ORB X
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_XIO,
@@ -1130,7 +970,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x68: EXA X
+  // 0x58: EXA X
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_XIO,
   SG_RXI | SG_XOR,
@@ -1140,7 +980,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x69: EXB X
+  // 0x59: EXB X
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_XIO,
@@ -1150,7 +990,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x6A: JMP X
+  // 0x5A: JMP X
   SG_IPI | SG_XIO,
   SG_NOP,
   SG_NOP,
@@ -1160,7 +1000,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x6B: JMP Y
+  // 0x5B: JMP Y
   SG_IPI | SG_YIO,
   SG_NOP,
   SG_NOP,
@@ -1170,47 +1010,47 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x6C: JMP imm
+  // 0x5C: JMP imm
   SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IPI | SG_RXI,
+  SG_IPI | SG_RXO,
   SG_NOP,
   SG_NOP,
   SG_NOP,
   SG_NOP,
 
-  // 0x6D: JSR X
+  // 0x5D: JSR X
   SG_IIP,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_XIO,
   SG_NOP,
   SG_NOP,
 
-  // 0x6E: JSR Y
+  // 0x5E: JSR Y
   SG_IIP,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_YIO,
   SG_NOP,
   SG_NOP,
 
-  // 0x6F: JSR imm
+  // 0x5F: JSR imm
   SG_IIP,
   SG_TLI | SG_REA | SG_IIP,
   SG_THI | SG_REA,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
-  SG_WRI | SG_RLO | SG_IIP,
+  SG_WRI | SG_RXO | SG_IIP,
   SG_WRI | SG_RHO | SG_ISP,
   SG_IPI | SG_TXO,
 
-  // 0x70: ADA Y
+  // 0x60: ADA Y
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_YIO,
   SG_RXI | SG_ADD,
@@ -1220,7 +1060,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x71: ADB Y
+  // 0x61: ADB Y
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_YIO,
@@ -1230,7 +1070,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x72: SBA Y
+  // 0x62: SBA Y
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_YIO,
   SG_RXI | SG_SUB,
@@ -1240,7 +1080,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x73: SBB Y
+  // 0x63: SBB Y
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_YIO,
@@ -1250,7 +1090,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x74: ANA Y
+  // 0x64: ANA Y
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_YIO,
   SG_RXI | SG_AND,
@@ -1260,7 +1100,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x75: ANB Y
+  // 0x65: ANB Y
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_YIO,
@@ -1270,7 +1110,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x76: ORA Y
+  // 0x66: ORA Y
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_YIO,
   SG_RXI | SG_ORR,
@@ -1280,7 +1120,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x77: ORB Y
+  // 0x67: ORB Y
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_YIO,
@@ -1290,7 +1130,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x78: EXA Y
+  // 0x68: EXA Y
   SG_TXI | SG_BXO | SG_IIP,
   SG_BXI | SG_YIO,
   SG_RXI | SG_XOR,
@@ -1300,7 +1140,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x79: EXB Y
+  // 0x69: EXB Y
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_BXI | SG_YIO,
@@ -1310,7 +1150,8 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x7A: JAZ X
+  // 0x6A: JAZ X
+  SG_IIP,
   SG_FLG_AXZ | SG_IPI | SG_XIO,
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
@@ -1318,9 +1159,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
-  SG_FLG_AXZ | SG_NOP,
 
-  // 0x7B: JAZ Y
+  // 0x6B: JAZ Y
+  SG_IIP,
   SG_FLG_AXZ | SG_IPI | SG_YIO,
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
@@ -1328,19 +1169,19 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
+
+  // 0x6C: JAZ imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_AXZ | SG_IPI | SG_RXO,
+  SG_FLG_AXZ | SG_NOP,
+  SG_FLG_AXZ | SG_NOP,
+  SG_FLG_AXZ | SG_NOP,
   SG_FLG_AXZ | SG_NOP,
 
-  // 0x7C: JAZ imm
-  SG_FLG_AXZ | SG_IIP,
-  SG_FLG_AXZ | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_AXZ | SG_RHI | SG_REA,
-  SG_FLG_AXZ | SG_IPI | SG_RXI,
-  SG_FLG_AXZ | SG_NOP,
-  SG_FLG_AXZ | SG_NOP,
-  SG_FLG_AXZ | SG_NOP,
-  SG_FLG_AXZ | SG_NOP,
-
-  // 0x7D: JBZ X
+  // 0x6D: JBZ X
+  SG_IIP,
   SG_FLG_BXZ | SG_IPI | SG_XIO,
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
@@ -1348,9 +1189,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
-  SG_FLG_BXZ | SG_NOP,
 
-  // 0x7E: JBZ Y
+  // 0x6E: JBZ Y
+  SG_IIP,
   SG_FLG_BXZ | SG_IPI | SG_YIO,
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
@@ -1358,19 +1199,18 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
+
+  // 0x6F: JBZ imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_BXZ | SG_IPI | SG_RXO,
+  SG_FLG_BXZ | SG_NOP,
+  SG_FLG_BXZ | SG_NOP,
+  SG_FLG_BXZ | SG_NOP,
   SG_FLG_BXZ | SG_NOP,
 
-  // 0x7F: JBZ imm
-  SG_FLG_BXZ | SG_IIP,
-  SG_FLG_BXZ | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_BXZ | SG_RHI | SG_REA,
-  SG_FLG_BXZ | SG_IPI | SG_RXI,
-  SG_FLG_BXZ | SG_NOP,
-  SG_FLG_BXZ | SG_NOP,
-  SG_FLG_BXZ | SG_NOP,
-  SG_FLG_BXZ | SG_NOP,
-
-  // 0x80: ADA imm
+  // 0x70: ADA imm
   SG_TXI | SG_BXO | SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -1380,7 +1220,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_TXO,
   SG_NOP,
 
-  // 0x81: ADB imm
+  // 0x71: ADB imm
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RLI | SG_REA | SG_IIP,
@@ -1390,7 +1230,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_AXI | SG_TXO,
 
-  // 0x82: SBA imm
+  // 0x72: SBA imm
   SG_TXI | SG_BXO | SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -1400,7 +1240,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_TXO,
   SG_NOP,
 
-  // 0x83: SBB imm
+  // 0x73: SBB imm
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RLI | SG_REA | SG_IIP,
@@ -1410,7 +1250,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_AXI | SG_TXO,
 
-  // 0x84: ANA imm
+  // 0x74: ANA imm
   SG_TXI | SG_BXO | SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -1420,7 +1260,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_TXO,
   SG_NOP,
 
-  // 0x85: ANB imm
+  // 0x75: ANB imm
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RLI | SG_REA | SG_IIP,
@@ -1430,7 +1270,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_AXI | SG_TXO,
 
-  // 0x86: ORA imm
+  // 0x76: ORA imm
   SG_TXI | SG_BXO | SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -1440,7 +1280,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_TXO,
   SG_NOP,
 
-  // 0x87: ORB imm
+  // 0x77: ORB imm
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RLI | SG_REA | SG_IIP,
@@ -1450,7 +1290,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_AXI | SG_TXO,
 
-  // 0x88: EXA imm
+  // 0x78: EXA imm
   SG_TXI | SG_BXO | SG_IIP,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA | SG_IIP,
@@ -1460,7 +1300,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_TXO,
   SG_NOP,
 
-  // 0x89: EXB imm
+  // 0x79: EXB imm
   SG_TXI | SG_AXO | SG_IIP,
   SG_AXI | SG_BXO,
   SG_RLI | SG_REA | SG_IIP,
@@ -1470,7 +1310,8 @@ static const uint32_t sg_ucode_arr[] = {
   SG_BXI | SG_RXO,
   SG_AXI | SG_TXO,
 
-  // 0x8A: JAN X
+  // 0x7A: JAN X
+  SG_IIP,
   SG_FLG_AXN | SG_IPI | SG_XIO,
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
@@ -1478,9 +1319,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
-  SG_FLG_AXN | SG_NOP,
 
-  // 0x8B: JAN Y
+  // 0x7B: JAN Y
+  SG_IIP,
   SG_FLG_AXN | SG_IPI | SG_YIO,
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
@@ -1488,19 +1329,19 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
+
+  // 0x7C: JAN imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_AXN | SG_IPI | SG_RXO,
+  SG_FLG_AXN | SG_NOP,
+  SG_FLG_AXN | SG_NOP,
+  SG_FLG_AXN | SG_NOP,
   SG_FLG_AXN | SG_NOP,
 
-  // 0x8C: JAN imm
-  SG_FLG_AXN | SG_IIP,
-  SG_FLG_AXN | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_AXN | SG_RHI | SG_REA,
-  SG_FLG_AXN | SG_IPI | SG_RXI,
-  SG_FLG_AXN | SG_NOP,
-  SG_FLG_AXN | SG_NOP,
-  SG_FLG_AXN | SG_NOP,
-  SG_FLG_AXN | SG_NOP,
-
-  // 0x8D: JBN X
+  // 0x7D: JBN X
+  SG_IIP,
   SG_FLG_BXN | SG_IPI | SG_XIO,
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
@@ -1508,9 +1349,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
-  SG_FLG_BXN | SG_NOP,
 
-  // 0x8E: JBN Y
+  // 0x7E: JBN Y
+  SG_IIP,
   SG_FLG_BXN | SG_IPI | SG_YIO,
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
@@ -1518,19 +1359,19 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
+
+  // 0x7F: JBN imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_BXN | SG_IPI | SG_RXO,
+  SG_FLG_BXN | SG_NOP,
+  SG_FLG_BXN | SG_NOP,
+  SG_FLG_BXN | SG_NOP,
   SG_FLG_BXN | SG_NOP,
 
-  // 0x8F: JBN imm
-  SG_FLG_BXN | SG_IIP,
-  SG_FLG_BXN | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_BXN | SG_RHI | SG_REA,
-  SG_FLG_BXN | SG_IPI | SG_RXI,
-  SG_FLG_BXN | SG_NOP,
-  SG_FLG_BXN | SG_NOP,
-  SG_FLG_BXN | SG_NOP,
-  SG_FLG_BXN | SG_NOP,
-
-  // 0x90: JEQ X
+  // 0x80: JEQ X
+  SG_IIP,
   SG_FLG_ZRO | SG_IPI | SG_XIO,
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
@@ -1538,9 +1379,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
-  SG_FLG_ZRO | SG_NOP,
 
-  // 0x91: JEQ Y
+  // 0x81: JEQ Y
+  SG_IIP,
   SG_FLG_ZRO | SG_IPI | SG_YIO,
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
@@ -1548,19 +1389,19 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
+
+  // 0x82: JEQ imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_ZRO | SG_IPI | SG_RXO,
+  SG_FLG_ZRO | SG_NOP,
+  SG_FLG_ZRO | SG_NOP,
+  SG_FLG_ZRO | SG_NOP,
   SG_FLG_ZRO | SG_NOP,
 
-  // 0x92: JEQ imm
-  SG_FLG_ZRO | SG_IIP,
-  SG_FLG_ZRO | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_ZRO | SG_RHI | SG_REA,
-  SG_FLG_ZRO | SG_IPI | SG_RXI,
-  SG_FLG_ZRO | SG_NOP,
-  SG_FLG_ZRO | SG_NOP,
-  SG_FLG_ZRO | SG_NOP,
-  SG_FLG_ZRO | SG_NOP,
-
-  // 0x93: JNE X
+  // 0x83: JNE X
+  SG_IIP,
   SG_FLG_NZR | SG_IPI | SG_XIO,
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
@@ -1568,9 +1409,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
-  SG_FLG_NZR | SG_NOP,
 
-  // 0x94: JNE Y
+  // 0x84: JNE Y
+  SG_IIP,
   SG_FLG_NZR | SG_IPI | SG_YIO,
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
@@ -1578,19 +1419,18 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
+
+  // 0x85: JNE imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_NZR | SG_IPI | SG_RXO,
+  SG_FLG_NZR | SG_NOP,
+  SG_FLG_NZR | SG_NOP,
+  SG_FLG_NZR | SG_NOP,
   SG_FLG_NZR | SG_NOP,
 
-  // 0x95: JNE imm
-  SG_FLG_NZR | SG_IIP,
-  SG_FLG_NZR | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_NZR | SG_RHI | SG_REA,
-  SG_FLG_NZR | SG_IPI | SG_RXI,
-  SG_FLG_NZR | SG_NOP,
-  SG_FLG_NZR | SG_NOP,
-  SG_FLG_NZR | SG_NOP,
-  SG_FLG_NZR | SG_NOP,
-
-  // 0x96: MSX
+  // 0x86: MSX
   SG_SPI | SG_XIO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -1600,7 +1440,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x97: MSY
+  // 0x87: MSY
   SG_SPI | SG_YIO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -1610,7 +1450,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x98: MXS
+  // 0x88: MXS
   SG_XII | SG_SPO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -1620,7 +1460,7 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x99: MYS
+  // 0x89: MYS
   SG_YII | SG_SPO | SG_IIP,
   SG_NOP,
   SG_NOP,
@@ -1630,7 +1470,8 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x9A: JGT X
+  // 0x8A: JGT X
+  SG_IIP,
   SG_FLG_NZR | SG_FLG_NCR | SG_IPI | SG_XIO,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
@@ -1638,9 +1479,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
 
-  // 0x9B: JGT Y
+  // 0x8B: JGT Y
+  SG_IIP,
   SG_FLG_NZR | SG_FLG_NCR | SG_IPI | SG_YIO,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
@@ -1648,19 +1489,19 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
+
+  // 0x8C: JGT imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_NZR | SG_FLG_NCR | SG_IPI | SG_RXO,
+  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
+  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
+  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
   SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
 
-  // 0x9C: JGT imm
-  SG_FLG_NZR | SG_FLG_NCR | SG_IIP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_RHI | SG_REA,
-  SG_FLG_NZR | SG_FLG_NCR | SG_IPI | SG_RXI,
-  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
-  SG_FLG_NZR | SG_FLG_NCR | SG_NOP,
-
-  // 0x9D: JLS X
+  // 0x8D: JLS X
+  SG_IIP,
   SG_FLG_NZR | SG_FLG_CRY | SG_IPI | SG_XIO,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
@@ -1668,9 +1509,9 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
 
-  // 0x9E: JLS Y
+  // 0x8E: JLS Y
+  SG_IIP,
   SG_FLG_NZR | SG_FLG_CRY | SG_IPI | SG_YIO,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
@@ -1678,17 +1519,176 @@ static const uint32_t sg_ucode_arr[] = {
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
+
+  // 0x8F: JLS imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_NZR | SG_FLG_CRY | SG_IPI | SG_RXO,
+  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
+  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
+  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
   SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
 
-  // 0x9F: JLS imm
-  SG_FLG_NZR | SG_FLG_CRY | SG_IIP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_RLI | SG_REA | SG_IIP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_RHI | SG_REA,
-  SG_FLG_NZR | SG_FLG_CRY | SG_IPI | SG_RXI,
-  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
-  SG_FLG_NZR | SG_FLG_CRY | SG_NOP,
+  // 0x90: JCR X
+  SG_IIP,
+  SG_FLG_CRY | SG_IPI | SG_XIO,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+
+  // 0x91: JCR Y
+  SG_IIP,
+  SG_FLG_CRY | SG_IPI | SG_YIO,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+
+  // 0x92: JCR imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_CRY | SG_IPI | SG_RXO,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+  SG_FLG_CRY | SG_NOP,
+
+  // 0x93: JNC X
+  SG_IIP,
+  SG_FLG_NCR | SG_IPI | SG_XIO,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+
+  // 0x94: JNC Y
+  SG_IIP,
+  SG_FLG_NCR | SG_IPI | SG_YIO,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+
+  // 0x95: JNC imm
+  SG_IIP,
+  SG_RLI | SG_REA | SG_IIP,
+  SG_RHI | SG_REA | SG_IIP,
+  SG_FLG_NCR | SG_IPI | SG_RXO,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+  SG_FLG_NCR | SG_NOP,
+
+  // 0x96: SW1
+  SG_RXI | SG_IPO,
+  SG_IPI | SG_SPO | SG_ISP,
+  SG_WRI | SG_RXO | SG_IIP,
+  SG_WRI | SG_RHO | SG_ISP,
+  SG_IPI | SG_SW1,
+  SG_RLI | SG_REA | SG_IPI,
+  SG_RHI | SG_REA,
+  SG_IPI | SG_RXO,
+
+  // 0x97: SW2
+  SG_RXI | SG_IPO,
+  SG_IPI | SG_SPO | SG_ISP,
+  SG_WRI | SG_RXO | SG_IIP,
+  SG_WRI | SG_RHO | SG_ISP,
+  SG_IPI | SG_SW2,
+  SG_RLI | SG_REA | SG_IPI,
+  SG_RHI | SG_REA,
+  SG_IPI | SG_RXO,
+
+  // 0x98: SW3
+  SG_RXI | SG_IPO,
+  SG_IPI | SG_SPO | SG_ISP,
+  SG_WRI | SG_RXO | SG_IIP,
+  SG_WRI | SG_RHO | SG_ISP,
+  SG_IPI | SG_SW3,
+  SG_RLI | SG_REA | SG_IPI,
+  SG_RHI | SG_REA,
+  SG_IPI | SG_RXO,
+
+  // 0x99: SW4
+  SG_RXI | SG_IPO,
+  SG_IPI | SG_SPO | SG_ISP,
+  SG_WRI | SG_RXO | SG_IIP,
+  SG_WRI | SG_RHO | SG_ISP,
+  SG_IPI | SG_SW4,
+  SG_RLI | SG_REA | SG_IPI,
+  SG_RHI | SG_REA,
+  SG_IPI | SG_RXO,
+
+  // 0x9A: NOP
+  SG_IIP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+
+  // 0x9B: HLT
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+
+  // 0x9C: RST
+  SG_IPI,
+  SG_SPI,
+  SG_AXI,
+  SG_BXI,
+  SG_DXI,
+  SG_XII,
+  SG_YII,
+  SG_NOP,
+
+  // 0x9D: MHL
+  SG_DHI | SG_DXO | SG_IIP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+
+  // 0x9E: MLH
+  SG_DLI | SG_DHO | SG_IIP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+
+  // 0x9F: THL
+  SG_RLI | SG_DHO | SG_IIP,
+  SG_DHI | SG_DXO,
+  SG_DLI | SG_RXO,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
+  SG_NOP,
 
   // 0xA0: MAB
   SG_AXI | SG_BXO | SG_IIP,
@@ -2008,66 +2008,6 @@ static const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
   SG_NOP,
-  SG_NOP,
-
-  // 0xC0: NOP
-  SG_IIP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0xC1: HLT
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0xC2: RST
-  SG_IPI,
-  SG_SPI,
-  SG_AXI,
-  SG_BXI,
-  SG_DXI,
-  SG_XII,
-  SG_YII,
-  SG_NOP,
-
-  // 0xC3: MHL
-  SG_DHI | SG_DLO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0xC3: MLH
-  SG_DLI | SG_DHO | SG_IIP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-
-  // 0xC4: THL
-  SG_RLI | SG_DHO | SG_IIP,
-  SG_DHI | SG_DLO,
-  SG_DLI | SG_RLO,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
   SG_NOP
 };
 
@@ -2105,23 +2045,6 @@ static const sg_instr_t sg_instr_arr[] = {
   (sg_instr_t){"STH",   "$Y", 1, 0},
   (sg_instr_t){"STL",   "$Y", 1, 0},
   (sg_instr_t){"STZ",   "$Y", 1, 0},
-
-  (sg_instr_t){"LDA", "$ptr", 1, 0},
-  (sg_instr_t){"LDB", "$ptr", 1, 0},
-  (sg_instr_t){"LDD", "$ptr", 1, 0},
-  (sg_instr_t){"LDX", "$ptr", 1, 0},
-  (sg_instr_t){"LDY", "$ptr", 1, 0},
-  (sg_instr_t){"LDH", "$ptr", 1, 0},
-  (sg_instr_t){"LDL", "$ptr", 1, 0},
-  (sg_instr_t){"LDS", "$ptr", 1, 0},
-  (sg_instr_t){"STA", "$ptr", 1, 0},
-  (sg_instr_t){"STB", "$ptr", 1, 0},
-  (sg_instr_t){"STD", "$ptr", 1, 0},
-  (sg_instr_t){"STX", "$ptr", 1, 0},
-  (sg_instr_t){"STY", "$ptr", 1, 0},
-  (sg_instr_t){"STH", "$ptr", 1, 0},
-  (sg_instr_t){"STL", "$ptr", 1, 0},
-  (sg_instr_t){"STZ", "$ptr", 1, 0},
 
   (sg_instr_t){"LDA",  "imm", 0, 0},
   (sg_instr_t){"LDB",  "imm", 0, 0},
@@ -2242,6 +2165,23 @@ static const sg_instr_t sg_instr_arr[] = {
   (sg_instr_t){"JLS",    "Y", 0, 1},
   (sg_instr_t){"JLS",  "imm", 0, 1},
 
+  (sg_instr_t){"JCR",    "X", 0, 1},
+  (sg_instr_t){"JCR",    "Y", 0, 1},
+  (sg_instr_t){"JCR",  "imm", 0, 1},
+  (sg_instr_t){"JNC",    "X", 0, 1},
+  (sg_instr_t){"JNC",    "Y", 0, 1},
+  (sg_instr_t){"JNC",  "imm", 0, 1},
+  (sg_instr_t){"SW1",   NULL, 0, 1},
+  (sg_instr_t){"SW2",   NULL, 0, 1},
+  (sg_instr_t){"SW3",   NULL, 0, 1},
+  (sg_instr_t){"SW4",   NULL, 0, 1},
+  (sg_instr_t){"NOP",   NULL, 0, 0},
+  (sg_instr_t){"HLT",   NULL, 0, 0},
+  (sg_instr_t){"RST",   NULL, 0, 1},
+  (sg_instr_t){"MHL",   NULL, 0, 0},
+  (sg_instr_t){"MLH",   NULL, 0, 0},
+  (sg_instr_t){"THL",   NULL, 0, 0},
+
   (sg_instr_t){"MAB",   NULL, 0, 0},
   (sg_instr_t){"MAD",   NULL, 0, 0},
   (sg_instr_t){"MAX",   NULL, 0, 0},
@@ -2274,14 +2214,7 @@ static const sg_instr_t sg_instr_arr[] = {
   (sg_instr_t){"TDY",   NULL, 0, 0},
   (sg_instr_t){"TXY",   NULL, 0, 0},
   (sg_instr_t){"DEX",   NULL, 0, 0},
-  (sg_instr_t){"DEY",   NULL, 0, 0},
-
-  (sg_instr_t){"NOP",   NULL, 0, 0},
-  (sg_instr_t){"HLT",   NULL, 0, 0},
-  (sg_instr_t){"RST",   NULL, 0, 1},
-  (sg_instr_t){"MHL",   NULL, 0, 0},
-  (sg_instr_t){"MLH",   NULL, 0, 0},
-  (sg_instr_t){"THL",   NULL, 0, 0}
+  (sg_instr_t){"DEY",   NULL, 0, 0}
 };
 
 #endif
