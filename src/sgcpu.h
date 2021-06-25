@@ -48,7 +48,8 @@ struct sg_label_t {
 
 static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
   *size = 0;
-  if (!code || !buffer) return;
+  if (!code || !buffer)
+    return;
 
   const char *old_code = code;
 
@@ -73,12 +74,14 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
         if (length) {
           if (!strcmp(prev, "ORG")) {
             num = (uint16_t)(strtol(curr, &end_ptr, 0));
-            if (end_ptr - curr < length) continue;
+            if (end_ptr - curr < length)
+              continue;
 
             org = num;
           } else if (!strcmp(prev, "ALIGN")) {
             num = (uint16_t)(strtol(curr, &end_ptr, 0));
-            if (end_ptr - curr < length) continue;
+            if (end_ptr - curr < length)
+              continue;
 
             if (*size % num) {
               num = num - (*size % num);
@@ -100,19 +103,22 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
           } else {
             for (int i = 0; i < SG_CNT; i++) {
               if (sg_instr_arr[i].arg) {
-                if (strcmp(sg_instr_arr[i].name, prev)) continue;
-                
+                if (strcmp(sg_instr_arr[i].name, prev))
+                  continue;
+
                 if (!strcmp(sg_instr_arr[i].arg, "imm")) {
                   org += 3, *size += 3;
                   break;
                 } else {
-                  if (strcmp(sg_instr_arr[i].arg, curr)) continue;
+                  if (strcmp(sg_instr_arr[i].arg, curr))
+                    continue;
 
                   org++, (*size)++;
                   break;
                 }
               } else {
-                if (strcmp(sg_instr_arr[i].name, curr)) continue;
+                if (strcmp(sg_instr_arr[i].name, curr))
+                  continue;
 
                 org++, (*size)++;
                 break;
@@ -156,7 +162,8 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
         if (length) {
           if (!strcmp(prev, "ALIGN")) {
             num = (uint16_t)(strtol(curr, &end_ptr, 0));
-            if (end_ptr - curr < length) continue;
+            if (end_ptr - curr < length)
+              continue;
 
             if (*size % num) {
               num = num - (*size % num);
@@ -164,12 +171,14 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
             }
           } else if (!strcmp(prev, "DB")) {
             num = (uint16_t)(strtol(curr, &end_ptr, 0));
-            if (end_ptr - curr < length) continue;
+            if (end_ptr - curr < length)
+              continue;
 
             buffer[(*size)++] = (uint8_t)(num);
           } else if (!strcmp(prev, "DW")) {
             num = (uint16_t)(strtol(curr, &end_ptr, 0));
-            if (end_ptr - curr < length) continue;
+            if (end_ptr - curr < length)
+              continue;
 
             buffer[(*size)++] = (uint8_t)(num >> 0);
             buffer[(*size)++] = (uint8_t)(num >> 8);
@@ -179,8 +188,9 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
           } else {
             for (int i = 0; i < SG_CNT; i++) {
               if (sg_instr_arr[i].arg) {
-                if (strcmp(sg_instr_arr[i].name, prev)) continue;
-                
+                if (strcmp(sg_instr_arr[i].name, prev))
+                  continue;
+
                 if (!strcmp(sg_instr_arr[i].arg, "imm")) {
                   num = (uint16_t)(strtol(curr, &end_ptr, 0));
 
@@ -195,21 +205,23 @@ static void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
 
                     continue;
                   }
-                  
-yay_found_a_label:
+
+                yay_found_a_label:
                   buffer[(*size)++] = (uint8_t)(i);
                   buffer[(*size)++] = (uint8_t)(num >> 0);
                   buffer[(*size)++] = (uint8_t)(num >> 8);
 
                   break;
                 } else {
-                  if (strcmp(sg_instr_arr[i].arg, curr)) continue;
+                  if (strcmp(sg_instr_arr[i].arg, curr))
+                    continue;
                   buffer[(*size)++] = (uint8_t)(i);
 
                   break;
                 }
               } else {
-                if (strcmp(sg_instr_arr[i].name, curr)) continue;
+                if (strcmp(sg_instr_arr[i].name, curr))
+                  continue;
                 buffer[(*size)++] = (uint8_t)(i);
 
                 break;
@@ -248,7 +260,8 @@ static void sg_step(sg_func_t func, sg_regs_t *regs) {
   uint32_t code = sg_ucode_arr[(regs->curr << 3) | regs->step];
   regs->step = (regs->step + 1) & 7;
 
-  if (!(code & 0xFFFF)) regs->sleep++;
+  if (!(code & 0xFFFF))
+    regs->sleep++;
   regs->total++;
 
   uint16_t bus = 0x0000;
@@ -274,153 +287,153 @@ static void sg_step(sg_func_t func, sg_regs_t *regs) {
     return;
 
   switch (code & SG_MSK_OUT) {
-    case SG_AXO:
-      bus |= regs->a;
-      break;
-    case SG_BXO:
-      bus |= regs->b;
-      break;
-    case SG_DXO:
-      bus |= regs->d;
-      break;
-    case SG_DHO:
-      bus |= (regs->d >> 8) & 0xFF;
-      break;
-    case SG_TXO:
-      bus |= regs->t;
-      break;
-    case SG_RXO:
-      bus |= regs->r;
-      break;
-    case SG_RHO:
-      bus |= (regs->r >> 8) & 0xFF;
-      break;
-    case SG_XIO:
-      bus |= regs->x;
-      break;
-    case SG_YIO:
-      bus |= regs->y;
-      break;
-    case SG_SPO:
-      bus |= regs->sp;
-      break;
-    case SG_IPO:
-      bus |= regs->ip;
-      break;
-    case SG_SW1:
-      bus |= 0xFFF8;
-      break;
-    case SG_SW2:
-      bus |= 0xFFFA;
-      break;
-    case SG_SW3:
-      bus |= 0xFFFC;
-      break;
-    case SG_SW4:
-      bus |= 0xFFFE;
-      break;
+  case SG_AXO:
+    bus |= regs->a;
+    break;
+  case SG_BXO:
+    bus |= regs->b;
+    break;
+  case SG_DXO:
+    bus |= regs->d;
+    break;
+  case SG_DHO:
+    bus |= (regs->d >> 8) & 0xFF;
+    break;
+  case SG_TXO:
+    bus |= regs->t;
+    break;
+  case SG_RXO:
+    bus |= regs->r;
+    break;
+  case SG_RHO:
+    bus |= (regs->r >> 8) & 0xFF;
+    break;
+  case SG_XIO:
+    bus |= regs->x;
+    break;
+  case SG_YIO:
+    bus |= regs->y;
+    break;
+  case SG_SPO:
+    bus |= regs->sp;
+    break;
+  case SG_IPO:
+    bus |= regs->ip;
+    break;
+  case SG_SW1:
+    bus |= 0xFFF8;
+    break;
+  case SG_SW2:
+    bus |= 0xFFFA;
+    break;
+  case SG_SW3:
+    bus |= 0xFFFC;
+    break;
+  case SG_SW4:
+    bus |= 0xFFFE;
+    break;
   }
 
   switch (code & SG_MSK_ALU) {
-    case SG_ADD:
-      bus |= regs->a + regs->b;
-      break;
-    case SG_SUB:
-      bus |= regs->a - regs->b;
-      break;
-    case SG_AND:
-      bus |= regs->a & regs->b;
-      break;
-    case SG_ORR:
-      bus |= regs->a | regs->b;
-      break;
-    case SG_XOR:
-      bus |= regs->a ^ regs->b;
-      break;
-    case SG_SHR:
-      bus |= regs->a >> 1;
-      break;
-    case SG_NEG:
-      bus |= regs->a ^ 0xFFFF;
-      break;
+  case SG_ADD:
+    bus |= regs->a + regs->b;
+    break;
+  case SG_SUB:
+    bus |= regs->a - regs->b;
+    break;
+  case SG_AND:
+    bus |= regs->a & regs->b;
+    break;
+  case SG_ORR:
+    bus |= regs->a | regs->b;
+    break;
+  case SG_XOR:
+    bus |= regs->a ^ regs->b;
+    break;
+  case SG_SHR:
+    bus |= regs->a >> 1;
+    break;
+  case SG_NEG:
+    bus |= regs->a ^ 0xFFFF;
+    break;
   }
 
   if (code & SG_REA)
     bus |= func.read(regs->ip);
 
   switch (code & SG_MSK_INP) {
-    case SG_AXI:
-      regs->a = bus;
-      break;
-    case SG_BXI:
-      regs->b = bus;
-      break;
-    case SG_DXI:
-      regs->d = bus;
-      break;
-    case SG_DHI:
-      regs->d = (regs->d & 0xFF) | (bus << 8);
-      break;
-    case SG_DLI:
-      regs->d = (regs->d & 0xFF00) | (bus & 0xFF);
-      break;
-    case SG_TXI:
-      regs->t = bus;
-      break;
-    case SG_THI:
-      regs->t = (regs->t & 0xFF) | (bus << 8);
-      break;
-    case SG_TLI:
-      regs->t = (regs->t & 0xFF00) | (bus & 0xFF);
-      break;
-    case SG_RXI:
-      regs->r = bus;
-      break;
-    case SG_RHI:
-      regs->r = (regs->r & 0xFF) | (bus << 8);
-      break;
-    case SG_RLI:
-      regs->r = (regs->r & 0xFF00) | (bus & 0xFF);
-      break;
-    case SG_XII:
-      regs->x = bus;
-      break;
-    case SG_YII:
-      regs->y = bus;
-      break;
-    case SG_SPI:
-      regs->sp = bus;
-      break;
-    case SG_IPI:
-      regs->ip = bus;
-      break;
+  case SG_AXI:
+    regs->a = bus;
+    break;
+  case SG_BXI:
+    regs->b = bus;
+    break;
+  case SG_DXI:
+    regs->d = bus;
+    break;
+  case SG_DHI:
+    regs->d = (regs->d & 0xFF) | (bus << 8);
+    break;
+  case SG_DLI:
+    regs->d = (regs->d & 0xFF00) | (bus & 0xFF);
+    break;
+  case SG_TXI:
+    regs->t = bus;
+    break;
+  case SG_THI:
+    regs->t = (regs->t & 0xFF) | (bus << 8);
+    break;
+  case SG_TLI:
+    regs->t = (regs->t & 0xFF00) | (bus & 0xFF);
+    break;
+  case SG_RXI:
+    regs->r = bus;
+    break;
+  case SG_RHI:
+    regs->r = (regs->r & 0xFF) | (bus << 8);
+    break;
+  case SG_RLI:
+    regs->r = (regs->r & 0xFF00) | (bus & 0xFF);
+    break;
+  case SG_XII:
+    regs->x = bus;
+    break;
+  case SG_YII:
+    regs->y = bus;
+    break;
+  case SG_SPI:
+    regs->sp = bus;
+    break;
+  case SG_IPI:
+    regs->ip = bus;
+    break;
   }
 
   if (code & SG_WRI)
     func.write(regs->ip, (uint8_t)(bus & 0xFF));
 
   switch (code & SG_MSK_INC) {
-    case SG_DEX:
-      regs->x--;
-      break;
-    case SG_DEY:
-      regs->y--;
-      break;
-    case SG_DSP:
-      regs->sp--;
-      break;
-    case SG_INX:
-      regs->x++;
-      break;
-    case SG_INY:
-      regs->y++;
-      break;
-    case SG_ISP:
-      regs->sp++;
-      break;
-    case SG_IIP:
-      regs->ip++;
-      break;
+  case SG_DEX:
+    regs->x--;
+    break;
+  case SG_DEY:
+    regs->y--;
+    break;
+  case SG_DSP:
+    regs->sp--;
+    break;
+  case SG_INX:
+    regs->x++;
+    break;
+  case SG_INY:
+    regs->y++;
+    break;
+  case SG_ISP:
+    regs->sp++;
+    break;
+  case SG_IIP:
+    regs->ip++;
+    break;
   }
 }
 

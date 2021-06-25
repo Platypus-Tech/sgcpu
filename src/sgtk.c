@@ -1,13 +1,33 @@
 // seg's CPU toolkit, by (surprisingly) segfaultdev!
 
+#include "sgcpu.h"
+#include <signal.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
-
-#include "sgcpu.h"
+#include <termios.h>
+#include <unistd.h>
 
 uint8_t *sgtk_mem;
+struct termios t_orig, t_chan;
+
+void enable_raw_mode() {
+  tcgetattr(STDIN_FILENO, &t_orig);
+  t_chan = t_orig;
+  t_chan.c_lflag &= ~(ECHO | ICANON);
+  tcsetattr(STDIN_FILENO, TCSAFLUSH, &t_chan);
+}
+
+void disable_raw_mode() {
+  tcsetattr(STDIN_FILENO, TCSAFLUSH, &t_orig);
+}
+
+void handle_sint() {
+  free(sgtk_mem);
+  disable_raw_mode();
+  exit(0);
+}
 
 void sgtk_write(uint16_t ptr, uint8_t val) {
   if (ptr >= 0x8000) {
@@ -20,16 +40,22 @@ void sgtk_write(uint16_t ptr, uint8_t val) {
 
 uint8_t sgtk_read(uint16_t ptr) {
   // printf("[SGTK] Reading from address 0x%04X\n", ptr);
+  if (ptr >= 0x4000 && ptr <= 0x7FFF) {
+    char ret;
+    read(STDIN_FILENO, &ret, 1);
+    return ret;
+  }
+
   return sgtk_mem[ptr & 0xFFFF];
 }
 
 int main(int argc, char const *argv[]) {
-  if (argc < 2) return 1;
+  if (argc < 2)
+    return 1;
 
   sg_func_t func = (sg_func_t){
-    sgtk_write,
-    sgtk_read
-  };
+      sgtk_write,
+      sgtk_read};
 
   sg_regs_t regs;
   regs.ip = 0, regs.step = 0, regs.sleep = 0, regs.total = 0;
@@ -48,13 +74,16 @@ int main(int argc, char const *argv[]) {
         src_path = argv[i];
     }
 
-    if (!src_path || !dst_path) return 1;
+    if (!src_path || !dst_path)
+      return 1;
 
     FILE *src_file = fopen(src_path, "r");
-    if (!src_file) return 1;
+    if (!src_file)
+      return 1;
 
     FILE *dst_file = fopen(dst_path, "wb");
-    if (!dst_file) return 1;
+    if (!dst_file)
+      return 1;
 
     fseek(src_file, 0, SEEK_END);
     size_t src_size = ftell(src_file);
@@ -79,7 +108,8 @@ int main(int argc, char const *argv[]) {
         uint16_t rom_origin = strtol(argv[++i], NULL, 0);
 
         FILE *rom_file = fopen(rom_path, "r");
-        if (!rom_file) return 1;
+        if (!rom_file)
+          return 1;
 
         fseek(rom_file, 0, SEEK_END);
         size_t rom_size = ftell(rom_file);
@@ -91,6 +121,9 @@ int main(int argc, char const *argv[]) {
         debug_mode = 1;
       }
     }
+
+    enable_raw_mode();
+    signal(SIGINT, handle_sint);
 
     for (;;) {
       if (debug_mode) {
@@ -110,7 +143,7 @@ int main(int argc, char const *argv[]) {
           }
 
           printf("[SGTK] A=0x%04X, B=0x%04X, D=0x%04X, X=0x%04X, Y=0x%04X, SP=0x%04X, IP=0x%04X\n", regs.a, regs.b, regs.d, regs.x, regs.y, regs.sp, regs.ip);
-          printf("[SGTK] %llu/%llu cycles sleep (%f)\n\n", regs.sleep, regs.total, (float)(regs.sleep) / (float)(regs.total));
+          printf("[SGTK] %llu/%llu cycles sleep (%f)\n\n", (long long unsigned)regs.sleep, (long long unsigned)regs.total, (float)(regs.sleep) / (float)(regs.total));
         }
       }
 
