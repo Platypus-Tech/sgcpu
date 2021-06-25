@@ -5,11 +5,10 @@
 
 typedef struct sg_instr_t sg_instr_t;
 
-struct sg_instr_t
-{
-    const char *name;
-    const char *arg;
-    int chg_data, chg_code;
+struct sg_instr_t {
+  const char *name;
+  const char *arg;
+  int chg_data, chg_code;
 };
 
 // Nothing!
