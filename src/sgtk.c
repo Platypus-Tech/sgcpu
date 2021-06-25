@@ -52,7 +52,6 @@ uint8_t sgtk_read(uint16_t ptr)
     {
         char ret;
         read(STDIN_FILENO, &ret, 1);
-        printf("Received char from stdin %c\n", ret);
         return ret;
     }
 
