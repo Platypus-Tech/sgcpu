@@ -26,5 +26,9 @@ M--/T--: First goes the destination, then the source
 $-: Value at address
 
 0x0000 - 0x3FFF: OS ROM
-0x4000 - 0x7FFF: Devices(serial port as of now)
-0x8000 - 0xFFFF: RAM
+0x4000 - 0x5FFF: Devices:
+  - 0x4000: Current RAM bank(read and write)
+  - 0x4001: Total number of banks(read only)
+  - 0x4002: Serial port(read and write)
+0x6000 - 0x7FFF: RAM
+0x8000 - 0xFFFF: Banked RAM

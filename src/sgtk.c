@@ -1,6 +1,7 @@
 // seg's CPU toolkit, by (surprisingly) segfaultdev!
 
 #include "sgcpu.h"
+
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -11,6 +12,12 @@
 
 uint8_t *sgtk_mem;
 struct termios t_orig, t_chan;
+
+uint8_t *sgtk_fixed_mem;
+uint8_t *sgtk_rom_mem;
+
+int sgtk_bank_cnt = 1;
+int sgtk_bank_pos = 0;
 
 void enable_raw_mode() {
   tcgetattr(STDIN_FILENO, &t_orig);
@@ -31,23 +38,32 @@ void handle_sint() {
 
 void sgtk_write(uint16_t ptr, uint8_t val) {
   if (ptr >= 0x8000) {
-    sgtk_mem[ptr & 0xFFFF] = val;
-  } else if (ptr >= 0x4000) {
+    sgtk_mem[(ptr - 0x8000) + (sgtk_bank_pos * 0x8000)] = val;
+  } else if (ptr == 0x4000) {
+    sgtk_bank_pos = val;
+  } else if (ptr == 0x4002) {
     putchar(val);
     fflush(stdout);
   }
 }
 
 uint8_t sgtk_read(uint16_t ptr) {
-  // printf("[SGTK] Reading from address 0x%04X\n", ptr);
-  if (ptr >= 0x4000 && ptr < 0x8000) {
+  if (ptr < 0x4000) {
+    return sgtk_rom_mem[ptr];
+  } else if (ptr == 0x4000) {
+    return (uint8_t)(sgtk_bank_pos);
+  } else if (ptr == 0x4001) {
+    return (uint8_t)(sgtk_bank_cnt);
+  } else if (ptr == 0x4002) {
     char ret;
     read(STDIN_FILENO, &ret, 1);
 
     return ret;
+  } else if (ptr >= 0x8000) {
+    return sgtk_mem[(ptr - 0x8000) + (sgtk_bank_pos * 0x8000)];
   }
 
-  return sgtk_mem[ptr & 0xFFFF];
+  return 0x00; // Should never happen if running proper code?
 }
 
 int main(int argc, char const *argv[]) {
@@ -62,12 +78,12 @@ int main(int argc, char const *argv[]) {
   sg_regs_t regs;
   regs.ip = 0, regs.step = 0, regs.sleep = 0, regs.total = 0;
 
-  sgtk_mem = malloc(65536);
-
   uint16_t size = 0;
 
   if (argv[1][0] == 'a') {
     const char *src_path = NULL, *dst_path = NULL;
+
+    sgtk_mem = malloc(65536);
 
     for (int i = 2; i < argc; i++) {
       if (!strcmp(argv[i], "-o"))
@@ -101,13 +117,17 @@ int main(int argc, char const *argv[]) {
 
     fclose(src_file);
     fclose(dst_file);
+
+    free(sgtk_mem);
   } else if (argv[1][0] == 'r') {
     int debug_mode = 0;
+
+    sgtk_fixed_mem = malloc(0x2000);
+    sgtk_rom_mem = malloc(0x4000);
 
     for (int i = 2; i < argc; i++) {
       if (!strcmp(argv[i], "-l")) {
         const char *rom_path = argv[++i];
-        uint16_t rom_origin = strtol(argv[++i], NULL, 0);
 
         FILE *rom_file = fopen(rom_path, "r");
         if (!rom_file)
@@ -117,12 +137,16 @@ int main(int argc, char const *argv[]) {
         size_t rom_size = ftell(rom_file);
         fseek(rom_file, 0, SEEK_SET);
 
-        fread(sgtk_mem + rom_origin, 1, rom_size, rom_file);
+        fread(sgtk_rom_mem, 1, rom_size, rom_file);
         fclose(rom_file);
       } else if (!strcmp(argv[i], "-d")) {
         debug_mode = 1;
+      } else if (!strcmp(argv[i], "-m")) {
+        sgtk_bank_cnt = strtol(argv[++i], NULL, 0);
       }
     }
+
+    sgtk_mem = malloc(sgtk_bank_cnt * 0x8000);
 
     enable_raw_mode();
     signal(SIGINT, handle_sint);
@@ -154,9 +178,11 @@ int main(int argc, char const *argv[]) {
       if (debug_mode)
         usleep(20000);
     }
-  }
 
-  free(sgtk_mem);
+    free(sgtk_mem);
+    free(sgtk_fixed_mem);
+    free(sgtk_rom_mem);
+  }
 
   return 0;
 }

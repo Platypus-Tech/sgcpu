@@ -2,16 +2,42 @@ org 0x0000
 
 start:
   lds 0x8000
-  jsr print_str
-echo_loop:
-  ldx 0x4000
+  ldx 0x4001
   ldl $x
+  jsr print_hex
+  ldx string
+  jsr print_str
+  hlt
+
+print_hex:
+  ldx 0x4002
+  ldh 0x00
+  mad
+  ana 0x000F
+  ldb 0x000A
+  jls low_dec
+  ada 0x0007
+low_dec:
+  ada 0x0030
+  tad
+  sla
+  sla
+  sla
+  sla
+  ana 0x0F00
+  ldb 0x0A00
+  jls high_dec
+  ada 0x0700
+high_dec:
+  ada 0x3000
+  ora d
+  mda
+  sth $x
   stl $x
-  jmp echo_loop
+  ret
 
 print_str:
-  ldx string
-  ldy 0x4000
+  ldy 0x4002
   ldh 0x00
 str_loop:
   ldl $x
@@ -24,4 +50,4 @@ str_end:
   ret
 
 string:
-  str "Hello, world!\n"
+  str "*32K RAM found\n"
