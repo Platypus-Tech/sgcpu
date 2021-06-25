@@ -2,6 +2,7 @@
 #define __SGCPU_H__
 
 #include <ctype.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 

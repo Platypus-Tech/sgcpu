@@ -3,9 +3,11 @@ org 0x0000
 start:
   lds 0x8000
   jsr print_str
-  jsr print_str
-  jsr print_str
-  hlt
+echo_loop:
+  ldx 0x4000
+  ldl $x
+  stl $x
+  jmp echo_loop
 
 print_str:
   ldx string

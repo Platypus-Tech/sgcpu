@@ -40,9 +40,10 @@ void sgtk_write(uint16_t ptr, uint8_t val) {
 
 uint8_t sgtk_read(uint16_t ptr) {
   // printf("[SGTK] Reading from address 0x%04X\n", ptr);
-  if (ptr >= 0x4000 && ptr <= 0x7FFF) {
+  if (ptr >= 0x4000 && ptr < 0x8000) {
     char ret;
     read(STDIN_FILENO, &ret, 1);
+
     return ret;
   }
 
@@ -54,8 +55,9 @@ int main(int argc, char const *argv[]) {
     return 1;
 
   sg_func_t func = (sg_func_t){
-      sgtk_write,
-      sgtk_read};
+    sgtk_write,
+    sgtk_read
+  };
 
   sg_regs_t regs;
   regs.ip = 0, regs.step = 0, regs.sleep = 0, regs.total = 0;
