@@ -229,7 +229,7 @@ int main(int argc, char const *argv[]) {
           }
 
           printf("[SGTK] A=0x%04X, B=0x%04X, D=0x%04X, X=0x%04X, Y=0x%04X, SP=0x%04X, IP=0x%04X\n", regs.a, regs.b, regs.d, regs.x, regs.y, regs.sp, regs.ip);
-          printf("[SGTK] %llu/%llu cycles sleep (%f)\n\n", (long long unsigned)regs.sleep, (long long unsigned)regs.total, (float)(regs.sleep) / (float)(regs.total));
+          printf("[SGTK] %lu/%lu cycles sleep (%f)\n\n", regs.sleep, regs.total, (float)(regs.sleep) / (float)(regs.total));
         }
       }
 
