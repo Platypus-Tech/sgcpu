@@ -1,6 +1,7 @@
 // seg's CPU toolkit, by (surprisingly) segfaultdev!
 
 #include "sgcpu.h"
+#include "raylib.h"
 
 #include <signal.h>
 #include <stdint.h>
@@ -9,15 +10,26 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
+#include <pthread.h>
+
+const Color color_palette[] = {
+  ORANGE,
+  BLUE,
+  GREEN,
+  WHITE
+};
 
 uint8_t *sgtk_mem;
 struct termios t_orig, t_chan;
 
 uint8_t *sgtk_fixed_mem;
 uint8_t *sgtk_rom_mem;
+uint8_t *sgtk_video_mem;
 
 int sgtk_bank_cnt = 1;
 int sgtk_bank_pos = 0;
+
+int win_scale = 4;
 
 void enable_raw_mode() {
   tcgetattr(STDIN_FILENO, &t_orig);
@@ -44,6 +56,10 @@ void sgtk_write(uint16_t ptr, uint8_t val) {
   } else if (ptr == 0x4002) {
     putchar(val);
     fflush(stdout);
+  } else if (ptr >= 0x5000 && ptr < 0x6000) {
+    sgtk_fixed_mem[ptr - 0x5000] = val;
+  } else if (ptr >= 0x6000 && ptr < 0x8000) {
+    sgtk_video_mem[ptr - 0x6000] = val;
   }
 }
 
@@ -59,11 +75,43 @@ uint8_t sgtk_read(uint16_t ptr) {
     read(STDIN_FILENO, &ret, 1);
 
     return ret;
+  } else if (ptr >= 0x5000 && ptr < 0x6000) {
+    return sgtk_fixed_mem[ptr - 0x5000];
+  } else if (ptr >= 0x6000 && ptr < 0x8000) {
+    return sgtk_video_mem[ptr - 0x6000];
   } else if (ptr >= 0x8000) {
     return sgtk_mem[(ptr - 0x8000) + (sgtk_bank_pos * 0x8000)];
   }
 
   return 0x00; // Should never happen if running proper code?
+}
+
+void *video_render(void *) {
+  InitWindow(240 * win_scale, 150 * win_scale, "sgtk emulator @ 240x150, 60 FPS, 5 colors");
+  SetTargetFPS(60);
+
+  while (!WindowShouldClose()) {
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+    
+    for (int i = 0; i < 150; i++) {
+      for (int j = 0; j < 240; j++) {
+        uint8_t byte = sgtk_video_mem[(j + (i * 240)) / 6];
+        uint8_t bit = j % 6;
+
+        if ((byte >> (5 - bit)) & 1) {
+          int index = byte >> 6;
+          DrawRectangle(j * win_scale, i * win_scale, win_scale, win_scale, color_palette[index]);
+        }
+      }
+    }
+
+    EndDrawing();
+  }
+
+  CloseWindow();
+  exit(0);
 }
 
 int main(int argc, char const *argv[]) {
@@ -83,7 +131,7 @@ int main(int argc, char const *argv[]) {
   if (argv[1][0] == 'a') {
     const char *src_path = NULL, *dst_path = NULL;
 
-    sgtk_mem = malloc(65536);
+    sgtk_mem = malloc(0x4000);
 
     for (int i = 2; i < argc; i++) {
       if (!strcmp(argv[i], "-o"))
@@ -120,9 +168,10 @@ int main(int argc, char const *argv[]) {
 
     free(sgtk_mem);
   } else if (argv[1][0] == 'r') {
-    int debug_mode = 0;
+    int debug_mode = 0, video_mode = 1;
 
-    sgtk_fixed_mem = malloc(0x2000);
+    sgtk_fixed_mem = malloc(0x1000);
+    sgtk_video_mem = calloc(0x2000, 1);
     sgtk_rom_mem = malloc(0x4000);
 
     for (int i = 2; i < argc; i++) {
@@ -143,6 +192,10 @@ int main(int argc, char const *argv[]) {
         debug_mode = 1;
       } else if (!strcmp(argv[i], "-m")) {
         sgtk_bank_cnt = strtol(argv[++i], NULL, 0);
+      } else if (!strcmp(argv[i], "-s")) {
+        win_scale = strtol(argv[++i], NULL, 0);
+      } else if (!strcmp(argv[i], "-v")) {
+        video_mode = 0;
       }
     }
 
@@ -150,6 +203,13 @@ int main(int argc, char const *argv[]) {
 
     enable_raw_mode();
     signal(SIGINT, handle_sint);
+
+    pthread_t video_thread;
+
+    if (video_mode) {
+      if (pthread_create(&video_thread, NULL, video_render, NULL))
+        return 1;
+    }
 
     for (;;) {
       if (debug_mode) {
@@ -176,11 +236,17 @@ int main(int argc, char const *argv[]) {
       sg_step(func, &regs);
 
       if (debug_mode)
-        usleep(20000);
+        usleep(10000);
+    }
+
+    if (video_mode) {
+      void *ill_probably_just_ignore_this;
+      pthread_join(video_thread, &ill_probably_just_ignore_this);
     }
 
     free(sgtk_mem);
     free(sgtk_fixed_mem);
+    free(sgtk_video_mem);
     free(sgtk_rom_mem);
   }
 
