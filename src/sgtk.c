@@ -168,7 +168,7 @@ int main(int argc, char const *argv[]) {
 
     free(sgtk_mem);
   } else if (argv[1][0] == 'r') {
-    int debug_mode = 0, video_mode = 1;
+    int debug_mode = 0, video_mode = 1, micro_delay = 0;
 
     sgtk_fixed_mem = malloc(0x1000);
     sgtk_video_mem = calloc(0x2000, 1);
@@ -189,6 +189,7 @@ int main(int argc, char const *argv[]) {
         fread(sgtk_rom_mem, 1, rom_size, rom_file);
         fclose(rom_file);
       } else if (!strcmp(argv[i], "-d")) {
+        micro_delay = strtol(argv[++i], NULL, 0);
         debug_mode = 1;
       } else if (!strcmp(argv[i], "-m")) {
         sgtk_bank_cnt = strtol(argv[++i], NULL, 0);
@@ -229,14 +230,16 @@ int main(int argc, char const *argv[]) {
           }
 
           printf("[SGTK] A=0x%04X, B=0x%04X, D=0x%04X, X=0x%04X, Y=0x%04X, SP=0x%04X, IP=0x%04X\n", regs.a, regs.b, regs.d, regs.x, regs.y, regs.sp, regs.ip);
-          printf("[SGTK] %lu/%lu cycles sleep (%f)\n\n", regs.sleep, regs.total, (float)(regs.sleep) / (float)(regs.total));
+          printf("[SGTK] %llu/%llu cycles sleep (%f)\n\n", (long long unsigned)regs.sleep, (long long unsigned)regs.total, (float)(regs.sleep) / (float)(regs.total));
         }
       }
 
       sg_step(func, &regs);
 
       if (debug_mode)
-        usleep(10000);
+        usleep(micro_delay);
+      else if (!(regs.total % 64))
+        usleep(32);
     }
 
     if (video_mode) {

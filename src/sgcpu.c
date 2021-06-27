@@ -26,6 +26,10 @@ void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
   int in_string = 0;
 
   while (*code) {
+    if (*code == '#') {
+      while (*code && *code != '\n') code++;
+    }
+    
     if (*code == '"') {
       in_string = !in_string;
     } else if (!in_string) {

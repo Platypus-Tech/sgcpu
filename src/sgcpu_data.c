@@ -800,7 +800,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IPI | SG_RXO,
+  SG_IPI | SG_RXO | SG_IIP,
   SG_NOP,
   SG_NOP,
 
@@ -935,7 +935,6 @@ const uint32_t sg_ucode_arr[] = {
   SG_NOP,
 
   // 0x5D: JSR X
-  SG_IIP,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
   SG_WRI | SG_RXO | SG_IIP,
@@ -943,9 +942,9 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_XIO,
   SG_NOP,
   SG_NOP,
+  SG_NOP,
 
   // 0x5E: JSR Y
-  SG_IIP,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
   SG_WRI | SG_RXO | SG_IIP,
@@ -953,11 +952,12 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_YIO,
   SG_NOP,
   SG_NOP,
+  SG_NOP,
 
   // 0x5F: JSR imm
   SG_IIP,
   SG_TLI | SG_REA | SG_IIP,
-  SG_THI | SG_REA | SG_IIP,
+  SG_THI | SG_REA,
   SG_RXI | SG_IPO,
   SG_IPI | SG_SPO | SG_ISP,
   SG_WRI | SG_RXO | SG_IIP,
@@ -1554,25 +1554,29 @@ const uint32_t sg_ucode_arr[] = {
   SG_NOP,
   SG_NOP,
 
-  // 0x9B: HLT
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
-  SG_NOP,
+  // ...
+
+  // 0x9B: SET
+  SG_TXI | SG_IPO,
+  SG_IPI | SG_XIO,
+  SG_XII | SG_BXO | SG_DEX,
+  SG_WRI | SG_DXO | SG_IIP,
+  SG_BXI | SG_XIO,
+  SG_XII | SG_IPO,
+  SG_IPI | SG_TXO,
+  SG_FLG_BXZ | SG_IIP,
+
+  // 0x9C: MOV
+  SG_TXI | SG_IPO,
+  SG_IPI | SG_XIO | SG_INX,
+  SG_RLI | SG_REA,
+  SG_IPI | SG_YIO | SG_INY,
+  SG_WRI | SG_RXO,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_NOP,
   SG_NOP,
 
-  // 0x9C: RST
-  SG_IPI,
-  SG_SPI,
-  SG_AXI,
-  SG_BXI,
-  SG_DXI,
-  SG_XII,
-  SG_YII,
-  SG_NOP,
+  // ...
 
   // 0x9D: MHL
   SG_DHI | SG_DXO | SG_IIP,
@@ -2090,8 +2094,8 @@ const sg_instr_t sg_instr_arr[] = {
   (sg_instr_t){"SW3", NULL, 0, 1},
   (sg_instr_t){"SW4", NULL, 0, 1},
   (sg_instr_t){"NOP", NULL, 0, 0},
-  (sg_instr_t){"HLT", NULL, 0, 0},
-  (sg_instr_t){"RST", NULL, 0, 1},
+  (sg_instr_t){"SET", NULL, 0, 0},
+  (sg_instr_t){"MOV", NULL, 0, 1},
   (sg_instr_t){"MHL", NULL, 0, 0},
   (sg_instr_t){"MLH", NULL, 0, 0},
   (sg_instr_t){"THL", NULL, 0, 0},

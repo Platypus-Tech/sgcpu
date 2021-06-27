@@ -8,7 +8,7 @@
 |    6x    | ADA Y    | ADB Y    | SBA Y    | SBB Y    | ANA Y    | ANB Y    | ORA Y    | ORB Y    | EXA Y    | EXB Y    | JAZ X    | JAZ Y    | JAZ imm  | JBZ X    | JBZ Y    | JBZ imm  |
 |    7x    | ADA imm  | ADB imm  | SBA imm  | SBB imm  | ANA imm  | ANB imm  | ORA imm  | ORB imm  | EXA imm  | EXB imm  | JAN X    | JAN Y    | JAN imm  | JBN X    | JBN Y    | JBN imm  |
 |    8x    | JEQ X    | JEQ Y    | JEQ imm  | JNE X    | JNE Y    | JNE imm  | MSX      | MSY      | MXS      | MYS      | JGT X    | JGT Y    | JGT imm  | JLS X    | JLS Y    | JLS imm  |
-|    9x    | JCR X    | JCR Y    | JCR imm  | JNC X    | JNC Y    | JNC imm  | SW1      | SW2      | SW3      | SW4      | NOP      | HLT      | RST      | MHL      | MLH      | THL      |
+|    9x    | JCR X    | JCR Y    | JCR imm  | JNC X    | JNC Y    | JNC imm  | SW1      | SW2      | SW3      | SW4      | NOP      | SET      | MOV      | MHL      | MLH      | THL      |
 |    Ax    | MAB      | MAD      | MAX      | MAY      | MBA      | MBD      | MBX      | MBY      | MDA      | MDB      | MDX      | MDY      | MXA      | MXB      | MXD      | MXY      |
 |    Bx    | MYA      | MYB      | MYD      | MYX      | TAB      | TAD      | TAX      | TAY      | TBD      | TBX      | TBY      | TDX      | TDY      | TXY      | DEX      | DEY      |
 |    Cx    |          |          |          |          |          |          |          |          |          |          |          |          |          |          |          |          |
@@ -17,7 +17,6 @@
 |    Fx    |          |          |          |          |          |          |          |          |          |          |          |          |          |          |          |          |
 
 HLT: Doesn't increment IP -> Halts CPU
-RST: Reset CPU -> Set IP, SP, A, B, D, X and Y to zero
 
 JSR: Pushes IP AFTER increment
 

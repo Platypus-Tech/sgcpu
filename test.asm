@@ -24,7 +24,8 @@ scr_loop:
 scr_end:
   ada 0x0001
   jmp scr_preloop
-  hlt
+inf_loop:
+  jmp inf_loop
 
 print_hex:
   ldx 0x4002
