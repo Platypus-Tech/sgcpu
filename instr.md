@@ -1,4 +1,5 @@
 |    //    |    x0    |    x1    |    x2    |    x3    |    x4    |    x5    |    x6    |    x7    |    x8    |    x9    |    xA    |    xB    |    xC    |    xD    |    xE    |    xF    |
+|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
 |    0x    | LDA $X   | LDB $X   | LDD $X   | LDX $X   | LDY $X   | LDH $X   | LDL $X   | LDS $X   | STA $X   | STB $X   | STD $X   | STX $X   | STY $X   | STH $X   | STL $X   | STZ $X   |
 |    1x    | LDA $Y   | LDB $Y   | LDD $Y   | LDX $Y   | LDY $Y   | LDH $Y   | LDL $Y   | LDS $Y   | STA $Y   | STB $Y   | STD $Y   | STX $Y   | STY $Y   | STH $Y   | STL $Y   | STZ $Y   |
 |    2x    | LDA imm  | LDB imm  | LDD imm  | LDX imm  | LDY imm  | LDH imm  | LDL imm  | LDS imm  | SRA      | SRB      | SLA      | SLB      | NGA      | NGB      | INX      | INY      |
