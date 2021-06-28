@@ -1,5 +1,5 @@
 # The Official `sgcpu` Assembly Language
-The `sgcpu` assembly syntax is influenced by 6502 assembly, although it is 8-bit, and this is 16-bit.
+The official reference for `sgcpu` assembly
 ## Comments
 Currently, there are only single line comments. Comments are designated with the `#` symbol, as seen below:
 ```
