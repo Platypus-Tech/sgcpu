@@ -158,7 +158,7 @@ int main(int argc, char const *argv[]) {
     char *src_buff = calloc(src_size + 2, 1);
     fread(src_buff, 1, src_size, src_file);
 
-    src_buff[src_size] = ' ';
+    src_buff[src_size] = '\n';
 
     sg_asm(src_buff, sgtk_mem, &size);
     fwrite(sgtk_mem, 1, size, dst_file);

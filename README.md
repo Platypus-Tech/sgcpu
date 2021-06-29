@@ -6,7 +6,7 @@ This is just a tiny emulated ISA and CPU with an assembler, a simple debugger wi
 
 ## Ok, how the heck do I run this?
 ```bash
-# You build running:
+# You build the toolkit and the tests by running:
 sh build.sh
 # (no I won't use makefiles)
 
@@ -14,8 +14,11 @@ sh build.sh
 ./sgtk asm FILENAME.asm -o OUTPUT.bin
 
 # You run the assembled version of that random assembly file doing:
-./sgtk run -l OUTPUT.bin 0x0000
-# (you can also add -d to the run command to see some magic debug info)
+./sgtk run -l OUTPUT.bin
+# Using that same command you can run the assembled tests at tests/bin.
+
+# You can also add -d followed by the number of microseconds per cycle to the run command to see some magic debug info:
+./sgtk run -l OUTPUT.bin -d 125000 # Each cycle takes 125 ms, and thus each instruction takes 1000 ms
 ```
 
 ## Wait, why is there a huuuge microcode table there?
@@ -29,6 +32,13 @@ Just 2 tiny notes:
 
 1. Plz don't change the format ):
 2. NO CLANG-FORMAT
+
+### List of contributors:
+
+- segfaultdev(original creator, segfaultdev@protonmail.com)
+- Smart6502(serial input, INSERT ADDRESS HERE)
+- aa2006(made old README.md, INSERT ADDRESS HERE)
+- DamienFC(documentation, INSERT ADDRESS HERE)
 
 ## License?
 Well, I'm using the MIT license, as this is just a tiny educative CPU for people to learn how real and modern CPUs work and maybe also how much I suck at coding? Also, I'll try to keep updating this project and, if you want to, you can also contribute and help me design it!

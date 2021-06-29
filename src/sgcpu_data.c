@@ -750,7 +750,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_TXO | SG_IIP,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_AXI | SG_RXO,
   SG_NOP,
 
@@ -760,7 +760,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_TXO | SG_IIP,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_BXI | SG_RXO,
   SG_NOP,
 
@@ -770,7 +770,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_TXO | SG_IIP,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_DXI | SG_RXO,
   SG_NOP,
 
@@ -780,7 +780,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_TXO | SG_IIP,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_XII | SG_RXO,
   SG_NOP,
 
@@ -790,7 +790,7 @@ const uint32_t sg_ucode_arr[] = {
   SG_IPI | SG_SPO,
   SG_RLI | SG_REA | SG_IIP,
   SG_RHI | SG_REA,
-  SG_IIP | SG_TXO | SG_IIP,
+  SG_IPI | SG_TXO | SG_IIP,
   SG_YII | SG_RXO,
   SG_NOP,
 

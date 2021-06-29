@@ -1,21 +1,22 @@
 #include "sgcpu.h"
 
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
-void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
+void sg_asm(char *code, uint8_t *buffer, uint16_t *size) {
   *size = 0;
   if (!code || !buffer)
     return;
 
-  const char *old_code = code;
+  sg_label_t labels[128];
+  int label_cnt = 0;
 
   uint16_t org = 0x0000;
 
-  sg_label_t labels[128];
-  int label_cnt = 0;
+  char *old_code = code;
 
   char prev[200] = {0}, curr[200] = {0};
   int length = 0;
@@ -23,7 +24,69 @@ void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
   char *end_ptr;
   uint16_t num;
 
-  int in_string = 0;
+  int in_string = 0, label_found = 0;
+
+  while (*code) {
+    if (*code == '#') {
+      while (*code && *code != '\n') code++;
+    }
+    
+    if (*code == '"') {
+      in_string = !in_string;
+    } else if (!in_string) {
+      if (isspace(*code)) {
+        if (length) {
+          if (!strcmp(prev, "INCLUDE")) {
+            FILE *inc_file = fopen(curr, "r");
+
+            if (!inc_file)
+              exit(1);
+
+            fseek(inc_file, 0, SEEK_END);
+            int inc_size = ftell(inc_file);
+            fseek(inc_file, 0, SEEK_SET);
+
+            int src_dist = (code - old_code) + 1;
+            int src_size = strlen(old_code);
+
+            old_code = realloc(old_code, src_size + inc_size + 2);
+            memmove(old_code + src_dist + inc_size, old_code + src_dist, src_size - src_dist);
+
+            old_code[src_size + inc_size] = '\n';
+            old_code[src_size + inc_size + 1] = '\0';
+
+            fread(old_code + src_dist, 1, inc_size, inc_file);
+            // code = old_code + (src_dist - 1);
+
+            fclose(inc_file);
+          }
+
+          memcpy(prev, curr, 200);
+        }
+
+        length = 0;
+      } else {
+        curr[length++] = toupper(*code);
+      }
+    } else if (*code == '\\') {
+      code++;
+
+      if (*code == 'n')
+        curr[length++] = '\n';
+    } else {
+      curr[length++] = *code;
+    }
+
+    curr[length] = '\0';
+    code++;
+  }
+
+  memset(prev, 0x00, 200);
+  memset(curr, 0x00, 200);
+
+  code = old_code;
+  length = 0;
+  in_string = 0;
 
   while (*code) {
     if (*code == '#') {
@@ -61,8 +124,15 @@ void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
           } else if (curr[length - 1] == ':') {
             curr[length - 1] = '\0';
 
-            strcpy(labels[label_cnt].name, curr);
-            labels[label_cnt++].ptr = org;
+            for (int i = 0; i < label_cnt; i++) {
+              if (!strcmp(curr, labels[i].name))
+                label_found = 1;
+            }
+
+            if (!label_found) {
+              strcpy(labels[label_cnt].name, curr);
+              labels[label_cnt++].ptr = org;
+            }
           } else {
             for (int i = 0; i < SG_CNT; i++) {
               if (sg_instr_arr[i].arg) {
@@ -156,20 +226,22 @@ void sg_asm(const char *code, uint8_t *buffer, uint16_t *size) {
 
                 if (!strcmp(sg_instr_arr[i].arg, "imm")) {
                   num = (uint16_t)(strtol(curr, &end_ptr, 0));
+                  label_found = 0;
 
                   if (end_ptr - curr < length) {
                     for (int j = 0; j < label_cnt; j++) {
                       if (!strcmp(curr, labels[j].name)) {
                         num = labels[j].ptr;
 
-                        goto yay_found_a_label;
+                        label_found = 1;
+                        break;
                       }
                     }
 
-                    continue;
+                    if (!label_found)
+                      continue;
                   }
 
-                yay_found_a_label:
                   buffer[(*size)++] = (uint8_t)(i);
                   buffer[(*size)++] = (uint8_t)(num >> 0);
                   buffer[(*size)++] = (uint8_t)(num >> 8);

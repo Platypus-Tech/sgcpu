@@ -130,7 +130,7 @@ struct sg_label_t {
 extern const uint32_t sg_ucode_arr[];
 extern const sg_instr_t sg_instr_arr[];
 
-void sg_asm(const char *code, uint8_t *buffer, uint16_t *size);
+void sg_asm(char *code, uint8_t *buffer, uint16_t *size);
 void sg_step(sg_func_t func, sg_regs_t *regs);
 
 #endif
