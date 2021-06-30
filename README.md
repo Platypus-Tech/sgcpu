@@ -38,7 +38,7 @@ Just 2 tiny notes:
 - segfaultdev(original creator, segfaultdev@protonmail.com)
 - Smart6502(serial input, INSERT ADDRESS HERE)
 - aa2006(made old README.md, INSERT ADDRESS HERE)
-- DamienFC(documentation, INSERT ADDRESS HERE)
+- DamieFC(documentation, gnuoveryou@gmail.com)
 
 ## License?
 Well, I'm using the MIT license, as this is just a tiny educative CPU for people to learn how real and modern CPUs work and maybe also how much I suck at coding? Also, I'll try to keep updating this project and, if you want to, you can also contribute and help me design it!
