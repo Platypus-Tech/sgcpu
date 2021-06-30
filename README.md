@@ -25,7 +25,7 @@ sh build.sh
 Good question! The thing is, I actually plan on building it in real life using 74-series logic gates and some additional memory ICs on a PCB I haven't designed yet, I just don't know when am I finally going to do it...
 
 ## Can you give more information about the architecture?
-For that, you can check the `instr.md` file, although it's not documented and it may be really hard to understand what's going on there. You also have a basic explanation of the registers in `sgcpu.h`.
+For that, you can check the `instr.md` file, although it's not documented and it may be really hard to understand what's going on there. You also have a basic explanation of the registers in `sgcpu.h`. For the not-yet-finished documentation, check the `docs` folder.
 
 ## Contributing
 Just 2 tiny notes:
